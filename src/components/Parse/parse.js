@@ -2,6 +2,7 @@ import {useRef, useState} from 'react';
 import { CSVReader } from 'react-papaparse';
 import { dsvFormat } from 'd3-dsv';
 import Table from '../Table';
+import Spinner from '../Spinner';
 import s from './parse.module.css'
 
 const { IDLE, PENDING, ERROR, SUCCESS } = {
@@ -9,7 +10,6 @@ const { IDLE, PENDING, ERROR, SUCCESS } = {
     PENDING: 'pending',
     ERROR: 'error',
     SUCCESS: 'success'
-
 }
 
 export default function ReaderCSV() {
@@ -125,7 +125,7 @@ export default function ReaderCSV() {
                 <h1>File format is not correct</h1>
             </div>)
             }
-        {status===PENDING && <h1>Loading...</h1>}
+        {status===PENDING && <Spinner/>}
       </>
     )
 }

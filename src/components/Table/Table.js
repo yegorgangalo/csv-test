@@ -3,11 +3,11 @@ import s from './Table.module.css';
 
 export default function Table({data, headers}) {
 
-    const validate = (key, clientObj) => {
+    function validate(key, clientObj) {
         if (key === "Phone" && (clientObj[key].length !==12 || clientObj[key].slice(0,2)!=="+1" )) {
             return false;
         }
-        if (key === "Email" && !(/^([a-z0-9_\.-])+@[a-z0-9-]+\.([a-z]{2,4}\.)?[a-z]{2,4}$/.test(clientObj[key]) )) {
+        if (key === "Email" && !(/^([a-z0-9_.-])+@[a-z0-9-]+\.([a-z]{2,4}\.)?[a-z]{2,4}$/.test(clientObj[key]) )) {
             return false;
         }
         if (key === "Age" && (!Number.isInteger(Number(clientObj[key])) || clientObj[key] < 21)) {
