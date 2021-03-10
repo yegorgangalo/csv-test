@@ -1,0 +1,32 @@
+.tableClients {
+  width: 80%;
+  max-width: 900px;
+  margin: 0 auto;
+  margin-bottom: 30px;
+  text-align: center;
+  box-shadow: 0px 1px 5px 0px #b6b6b6;
+  border: 2px solid black;
+  border-collapse: collapse;
+}
+
+tr {
+  height: 50px;
+  border-bottom: 2px solid black;
+}
+
+thead {
+  background-color: #cfe2f3;
+}
+
+th {
+  font-weight: 600;
+}
+
+th:not(:last-child),
+td:not(:last-child) {
+  border-right: 2px solid black;
+}
+
+.error {
+  background-color: #f4cccc;
+}
