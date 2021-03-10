@@ -1,6 +1,6 @@
 .tableClients {
-  width: 80%;
-  max-width: 900px;
+  width: 90%;
+  max-width: 1200px;
   margin: 0 auto;
   margin-bottom: 30px;
   text-align: center;
@@ -20,6 +20,12 @@ thead {
 
 th {
   font-weight: 600;
+}
+
+th,
+td {
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
 th:not(:last-child),

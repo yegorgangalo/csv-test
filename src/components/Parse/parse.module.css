@@ -1,0 +1,28 @@
+.btnLoad {
+  display: block;
+  margin-top: 30px;
+  margin-right: 10%;
+  margin-bottom: 30px;
+  margin-left: auto;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  color: white;
+  font-size: larger;
+  border: solid 1px #59774c;
+  background-color: #92c47d;
+}
+
+.errorBlock {
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  min-width: 400px;
+  max-width: 600px;
+  height: 200px;
+  background-color: #f4cccc;
+  border: solid 1px #f79191;
+}

@@ -1,7 +1,8 @@
-import {useRef, /* useEffect, */ useState} from 'react';
+import {useRef, useState} from 'react';
 import { CSVReader } from 'react-papaparse';
 import { dsvFormat } from 'd3-dsv';
-import Table from './Table';
+import Table from '../Table';
+import s from './parse.module.css'
 
 const { IDLE, PENDING, ERROR, SUCCESS } = {
     IDLE: 'idle',
@@ -45,18 +46,6 @@ export default function ReaderCSV() {
         }
         return license;
     }
-
-    // const dateNormalize = (date) => {
-    //     if (date.includes('-')) {
-    //         const dateArr = date.split('-');
-    //         if (dateArr[0].length === 4) {
-    //             const year = dateArr[0];
-    //             const month = dateArr[1];
-    //             const day = dateArr[2];
-    //         }
-    //     }
-    //     const currentDate = Date.now();
-    // }
 
     const handleOpenDialog = (event) => {
         buttonRef.current && buttonRef.current.open(event);
@@ -122,16 +111,20 @@ export default function ReaderCSV() {
           onFileLoad={handleOnFileLoad}
           onError={handleOnError}
         >
-          {({ file }) => (
+          {() => (
             <>
-              <button type='button' onClick={handleOpenDialog}>
+              <button type='button' onClick={handleOpenDialog} className={s.btnLoad} >
                 Import users
               </button>
             </>
           )}
         </CSVReader>
         {status===SUCCESS && <Table data={dataCSV} headers={headersCSV} />}
-        {status===ERROR && <h1>Error</h1>}
+        {status===ERROR && (
+            <div className={s.errorBlock}>
+                <h1>File format is not correct</h1>
+            </div>)
+            }
         {status===PENDING && <h1>Loading...</h1>}
       </>
     )
