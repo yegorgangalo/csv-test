@@ -1,37 +1,102 @@
-// import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import s from './Table.module.css';
 
-export default function Table({data, headers}) {
+export default function Table({ data, headers }) {
+    const tableBody = useRef(null);
+    useEffect(() => {
+        if (!tableBody.current) {
+            return;
+        }
 
-    function validate(key, clientObj) {
-        if (key === "Phone" && (clientObj[key].length !==12 || clientObj[key].slice(0,2)!=="+1" )) {
-            return false;
-        }
-        if (key === "Email" && !(/^([a-z0-9_.-])+@[a-z0-9-]+\.([a-z]{2,4}\.)?[a-z]{2,4}$/.test(clientObj[key]) )) {
-            return false;
-        }
-        if (key === "Age" && (!Number.isInteger(Number(clientObj[key])) || clientObj[key] < 21)) {
-            return false;
-        }
-        if (key === "Experience" && (clientObj[key] < 0 || clientObj[key] > clientObj["Age"])) {
-            return false;
-        }
-        if (key === "Yearly Income" && (clientObj[key] > 1000000)) {
-            return false;
-        }
-        if (key === "Has children" && !(clientObj[key]==="TRUE" || clientObj[key]==="FALSE" || clientObj[key]==="")) {
-            return false;
-        }
-        if (key === "License number" && !(clientObj[key].length===6 && /^[A-Za-z0-9]+$/.test(clientObj[key]))) {
-            return false;
-        }
-        if (key === "Expiration date" && dateNotValid(clientObj[key])) {
-            return false;
-        }
-        return true;
-    }
+        const normalizedHeaders = headers.map(header => header.includes(' ')
+            ? header.split(' ').join('.')
+            : header);
 
-    function dateNotValid(date) {
+        const objOfTableColumns = normalizedHeaders.reduce((accObj, normalizedHeader) => {
+            if (normalizedHeader === "ID" || normalizedHeader === "Full.Name" || normalizedHeader === "License.states" || normalizedHeader === "Duplicate.with") {
+                return accObj;
+            }
+            const collection = tableBody.current.querySelectorAll(`.${normalizedHeader}`);
+            return { ...accObj, [normalizedHeader]: collection };
+        }, {})
+
+        for (const key in objOfTableColumns) {
+            validate(key, objOfTableColumns)
+        }
+
+        function validate(key, clientObj) {
+            const collection = clientObj[key];
+            switch (key) {
+                case "Phone":
+                    collection.forEach(item => {
+                        if (item.textContent.length !== 12 || item.textContent.slice(0, 2) !== "+1") {
+                            item.classList.add(s.error);
+                        }
+                    })
+                    break;
+
+                case "Email":
+                    collection.forEach(item => {
+                        if (!/^([a-z0-9_.-])+@[a-z0-9-]+\.([a-z]{2,4}\.)?[a-z]{2,4}$/.test(item.textContent)) {
+                            item.classList.add(s.error);
+                        }
+                    })
+                    break;
+
+                case "Age":
+                    collection.forEach(item => {
+                        if (!Number.isInteger(Number(item.textContent)) || item.textContent < 21) {
+                            item.classList.add(s.error);
+                        }
+                    })
+                    break;
+
+                case "Experience":
+                    collection.forEach((item, idx) => {
+                        if (item.textContent < 0 || +item.textContent > +clientObj["Age"][idx].textContent) {
+                            item.classList.add(s.error);
+                        }
+                    })
+                    break;
+
+                case "Yearly.Income":
+                    collection.forEach(item => {
+                        if (isNaN(item.textContent) || item.textContent < 0 || item.textContent > 1000000) {
+                            item.classList.add(s.error);
+                        }
+                    })
+                    break;
+
+                case "Has.children":
+                    collection.forEach(item => {
+                        if (!(item.textContent==="TRUE" || item.textContent==="FALSE" || item.textContent==="")) {
+                            item.classList.add(s.error);
+                        }
+                    })
+                    break;
+
+                case "License.number":
+                    collection.forEach(item => {
+                        if (!(item.textContent.length===6 && /^[A-Za-z0-9]+$/.test(item.textContent))) {
+                            item.classList.add(s.error);
+                        }
+                    })
+                    break;
+
+                case "Expiration.date":
+                    collection.forEach(item => {
+                        if (dateNotValid(item.textContent)) {
+                            item.classList.add(s.error);
+                        }
+                    })
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        function dateNotValid(date) {
         if (date.includes('-')) {
             const dateArr = date.split('-');
             if (dateArr[0].length === 4) {
@@ -51,9 +116,9 @@ export default function Table({data, headers}) {
             }
         }
         return true;
-    }
+        }
 
-    function isExpirationValid(year, month, day) {
+        function isExpirationValid(year, month, day) {
         //дотошну перевірку "скільки днів у певному місяці і чи є 29днів у лютому в залежності від високосного року" не роблю на етапі тестування
         if (month > 12 || month < 1 || day > 31 || day < 1) {
             return true;
@@ -61,7 +126,9 @@ export default function Table({data, headers}) {
         const expirationDate = new Date(year, month - 1, day);
         const currentDate = Date.now();
         return expirationDate - currentDate > 0 ? false : true;
-    }
+        }
+
+    }, [headers])
 
     return (
         <div className={s.wrapBlock} >
@@ -73,15 +140,11 @@ export default function Table({data, headers}) {
                     </tr>
                 </thead>
 
-                <tbody>
+                <tbody ref={tableBody}>
                     {data.map((client) => {
                         const clientKeys = Object.keys(client);
                         return (<tr key={client.ID}>
-                            {clientKeys.map((key, idx) => {
-                                return validate(key, client)
-                                    ? (<td key={idx}>{client[key]}</td>)
-                                    : (<td key={idx} className={s.error} >{client[key]}</td>)
-                            })}
+                            {clientKeys.map((key, idx) => <td key={idx} className={key}>{client[key]}</td>)}
                         </tr>)
                     })}
                 </tbody>

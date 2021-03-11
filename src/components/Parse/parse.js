@@ -28,6 +28,12 @@ export default function ReaderCSV() {
         return phoneNumber;
     }
 
+    const yearlyIncomeNormalize = (yearlyIncome) => {
+        return Number(yearlyIncome)
+            ? Number(yearlyIncome).toFixed(2)
+            : yearlyIncome;
+    }
+
     const licenseNormalize = (license) => {
         if (license.includes('|')) {
             const licenseArr = license.split('|');
@@ -69,7 +75,7 @@ export default function ReaderCSV() {
                 ...client,
                 "Phone": phoneNormalize(client["Phone"]),
                 "Email": client["Email"].toLowerCase(),
-                "Yearly Income": Number(client["Yearly Income"]).toFixed(2),
+                "Yearly Income": yearlyIncomeNormalize(client["Yearly Income"]),
                 "Has children": client["Has children"].toUpperCase(),
                 "License states": licenseNormalize(client["License states"])
             };
