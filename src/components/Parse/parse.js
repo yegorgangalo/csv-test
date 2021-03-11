@@ -29,22 +29,12 @@ export default function ReaderCSV() {
     }
 
     const licenseNormalize = (license) => {
-        if (license.includes(',')) {
-            const licenseArr = license.split(',');
-            const shortCutLicenseArr = licenseArr.map(license => license.trim().slice(0, 2).toUpperCase())
-            return shortCutLicenseArr.join(", ");
-        }
         if (license.includes('|')) {
             const licenseArr = license.split('|');
-            const shortCutLicenseArr = licenseArr.map(license => license.trim().slice(0, 2).toUpperCase())
+            const shortCutLicenseArr = licenseArr.map(license => license.trim().slice(0, 2).toUpperCase());
             return shortCutLicenseArr.join(", ");
         }
-        if (license.includes(' ')) {
-            const licenseArr = license.split(' ');
-            const shortCutLicenseArr = licenseArr.map(license => license.trim().slice(0, 2).toUpperCase())
-            return shortCutLicenseArr.join(", ");
-        }
-        return license;
+        return license.slice(0, 2).toUpperCase();
     }
 
     const handleOpenDialog = (event) => {
@@ -53,7 +43,6 @@ export default function ReaderCSV() {
 
     const handleOnFileLoad = (arrOfObjCSV) => {
         setStatus(PENDING);
-        arrOfObjCSV.shift();
 
         const trimmedArrOfArrCSV = arrOfObjCSV.map(({ data }) =>
             data.map(el => el.trim())
@@ -61,7 +50,6 @@ export default function ReaderCSV() {
 
         trimmedArrOfArrCSV[0].push("Duplicate with");
         setHeadersCSV(trimmedArrOfArrCSV[0]);
-
         const arrOfStrings = trimmedArrOfArrCSV.map(el => el.join(';'));
         const strCSV = arrOfStrings.join('\n');
         const parsedClientsCSV = dsvFormat(";").parse(strCSV);
@@ -84,7 +72,6 @@ export default function ReaderCSV() {
                 "Yearly Income": Number(client["Yearly Income"]).toFixed(2),
                 "Has children": client["Has children"].toUpperCase(),
                 "License states": licenseNormalize(client["License states"])
-                // "Expiration date": dateNormalize(client["Expiration date"])
             };
         })
         const clientsWithDublicateProp = normalizedClients.map((client, idx) => ({ "ID": idx + 1, ...client, "Duplicate with": [] }));
@@ -92,7 +79,6 @@ export default function ReaderCSV() {
             clientsWithDublicateProp.forEach(client => {
                 if (client.ID !== ID && (client.Phone === Phone || client.Email === Email)) {
                     client["Duplicate with"] = ID;
-                    // client["Duplicate with"].push(ID);
                 }
             })
         })

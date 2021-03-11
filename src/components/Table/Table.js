@@ -54,6 +54,7 @@ export default function Table({data, headers}) {
     }
 
     function isExpirationValid(year, month, day) {
+        //дотошну перевірку "скільки днів у певному місяці і чи є 29днів у лютому в залежності від високосного року" не роблю на етапі тестування
         if (month > 12 || month < 1 || day > 31 || day < 1) {
             return true;
         }
@@ -63,26 +64,28 @@ export default function Table({data, headers}) {
     }
 
     return (
-        <table className={s.tableClients}>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    {headers.map((header, index) => (<th key={index}>{header}</th>))}
-                </tr>
-            </thead>
+        <div className={s.wrapBlock} >
+            <table className={s.tableClients}>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        {headers.map((header, index) => (<th key={index}>{header}</th>))}
+                    </tr>
+                </thead>
 
-            <tbody>
-                {data.map((client) => {
-                    const clientKeys = Object.keys(client);
-                    return (<tr key={client.ID}>
-                        {clientKeys.map((key, idx) => {
-                            return validate(key, client)
-                                ? (<td key={idx}>{client[key]}</td>)
-                                : (<td key={idx} className={s.error} >{client[key]}</td>)
-                        })}
-                    </tr>)
-                })}
-            </tbody>
-        </table>
+                <tbody>
+                    {data.map((client) => {
+                        const clientKeys = Object.keys(client);
+                        return (<tr key={client.ID}>
+                            {clientKeys.map((key, idx) => {
+                                return validate(key, client)
+                                    ? (<td key={idx}>{client[key]}</td>)
+                                    : (<td key={idx} className={s.error} >{client[key]}</td>)
+                            })}
+                        </tr>)
+                    })}
+                </tbody>
+            </table>
+        </div>
     )
 }

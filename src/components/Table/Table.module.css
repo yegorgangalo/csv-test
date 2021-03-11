@@ -1,3 +1,9 @@
+.wrapBlock {
+  margin-left: 10px;
+  margin-right: 10px;
+  overflow-x: scroll;
+}
+
 .tableClients {
   width: 90%;
   max-width: 1200px;
