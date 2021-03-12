@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import validateDate from "validate-date";
-import { compareAsc } from 'date-fns'
+import moment from 'moment';
 import s from './Table.module.css';
 
 export default function Table({ data, headers }) {
@@ -99,35 +99,16 @@ export default function Table({ data, headers }) {
         }
 
         function dateNotValid(date) {
-            if (!validateDate(date, "boolean")) {
+            if (!date || !validateDate(date, "boolean")) {
                     return true;
-                }
+            }
             if (date.includes('-')) {
-                const dateArr = date.split('-');
-                if (dateArr[0].length === 4) {
-                    const year = dateArr[0];
-                    const month = dateArr[1];
-                    const day = dateArr[2];
-                    return isExpirationDateExpired(year, month, day);
-                }
+                return moment(date) - moment() > 0 ? false : true;
             }
             if (date.includes('/')) {
-                const dateArr = date.split('/');
-                if (dateArr[2].length === 4) {
-                    const year = dateArr[2];
-                    const month = dateArr[0];
-                    const day = dateArr[1];
-                    return isExpirationDateExpired(year, month, day);
-                }
+                return moment(date, "MM/DD/YYYY") - moment() > 0 ? false : true;
             }
         }
-
-        function isExpirationDateExpired(year, month, day) {
-        const expirationDate = new Date(year, month - 1, day);
-        const currentDate = Date.now();
-        return expirationDate - currentDate > 0 ? false : true;
-        }
-
     }, [headers])
 
     return (
