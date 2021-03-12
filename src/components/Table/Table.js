@@ -1,13 +1,11 @@
 import { useEffect, useRef } from 'react';
 import validateDate from "validate-date";
+import { compareAsc } from 'date-fns'
 import s from './Table.module.css';
 
 export default function Table({ data, headers }) {
     const tableBody = useRef(null);
     useEffect(() => {
-        const a = null;
-        const b = null;
-        console.log(a===b);
         if (!tableBody.current) {
             return;
         }
