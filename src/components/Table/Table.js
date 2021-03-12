@@ -87,7 +87,13 @@ export default function Table({ data, headers }) {
 
                 case "Expiration.date":
                     collection.forEach(item => {
-                        if (dateNotValid(item.textContent)) {
+                        const expDate = item.textContent;
+                        if (!expDate || !validateDate(expDate, "boolean")) {
+                            item.classList.add(s.error);
+                            return;
+                        }
+                        const dateFormat = expDate.includes('/') ? "MM/DD/YYYY": "YYYY-MM-DD";
+                        if (moment(expDate, dateFormat) - moment() <= 0) {
                             item.classList.add(s.error);
                         }
                     })
@@ -95,18 +101,6 @@ export default function Table({ data, headers }) {
 
                 default:
                     break;
-            }
-        }
-
-        function dateNotValid(date) {
-            if (!date || !validateDate(date, "boolean")) {
-                    return true;
-            }
-            if (date.includes('-')) {
-                return moment(date) - moment() > 0 ? false : true;
-            }
-            if (date.includes('/')) {
-                return moment(date, "MM/DD/YYYY") - moment() > 0 ? false : true;
             }
         }
     }, [headers])
