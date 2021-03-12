@@ -1,9 +1,13 @@
 import { useEffect, useRef } from 'react';
+import validateDate from "validate-date";
 import s from './Table.module.css';
 
 export default function Table({ data, headers }) {
     const tableBody = useRef(null);
     useEffect(() => {
+        const a = null;
+        const b = null;
+        console.log(a===b);
         if (!tableBody.current) {
             return;
         }
@@ -97,32 +101,30 @@ export default function Table({ data, headers }) {
         }
 
         function dateNotValid(date) {
-        if (date.includes('-')) {
-            const dateArr = date.split('-');
-            if (dateArr[0].length === 4) {
-                const year = dateArr[0];
-                const month = dateArr[1];
-                const day = dateArr[2];
-                return isExpirationValid(year, month, day);
+            if (!validateDate(date, "boolean")) {
+                    return true;
+                }
+            if (date.includes('-')) {
+                const dateArr = date.split('-');
+                if (dateArr[0].length === 4) {
+                    const year = dateArr[0];
+                    const month = dateArr[1];
+                    const day = dateArr[2];
+                    return isExpirationDateExpired(year, month, day);
+                }
             }
-        }
-        if (date.includes('/')) {
-            const dateArr = date.split('/');
-            if (dateArr[2].length === 4) {
-                const year = dateArr[2];
-                const month = dateArr[0];
-                const day = dateArr[1];
-                return isExpirationValid(year, month, day);
+            if (date.includes('/')) {
+                const dateArr = date.split('/');
+                if (dateArr[2].length === 4) {
+                    const year = dateArr[2];
+                    const month = dateArr[0];
+                    const day = dateArr[1];
+                    return isExpirationDateExpired(year, month, day);
+                }
             }
-        }
-        return true;
         }
 
-        function isExpirationValid(year, month, day) {
-        //дотошну перевірку "скільки днів у певному місяці і чи є 29днів у лютому в залежності від високосного року" не роблю на етапі тестування
-        if (month > 12 || month < 1 || day > 31 || day < 1) {
-            return true;
-        }
+        function isExpirationDateExpired(year, month, day) {
         const expirationDate = new Date(year, month - 1, day);
         const currentDate = Date.now();
         return expirationDate - currentDate > 0 ? false : true;
